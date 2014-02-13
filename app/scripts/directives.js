@@ -57,7 +57,7 @@ module.directive('numberList', function() {
     replace: false,
     link: renderList,
     controller: function($scope) {
-      var selected = $scope.selected = 0;
+      $scope.selected = 0;
 
       $scope.pick = function(number) {
         console.log('number selected!', number);
@@ -65,6 +65,7 @@ module.directive('numberList', function() {
           n.selected = false;
         });
         number.selected = true;
+        $scope.selected = number;
       };
     }
   };
