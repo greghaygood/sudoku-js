@@ -1,4 +1,12 @@
-How this app works:
+# What is it?
+
+This is a simple app I created because
+
+ a.  I wanted to better learn how to write AngularJS apps, and 
+ b.  I love Sudoku.  
+
+
+# How the code works:
 
 Page loads with a blank 9x9 grid
 
