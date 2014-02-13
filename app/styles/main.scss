@@ -1,6 +1,10 @@
-$icon-font-path: "/bower_components/sass-bootstrap/fonts/";
+$icon-font-path: "/vendor/sass-bootstrap/fonts/";
 
 @import 'sass-bootstrap/lib/bootstrap';
+@import 'bower-bourbon/bourbon';
+//@import 'bower-neat/neat';
+
+@import 'mixins';
 
 .browsehappy {
     margin: 0.2em 0;
@@ -43,7 +47,6 @@ body {
     border-top: 1px solid #e5e5e5;
 }
 
-
 .footer {
 
   position: relative;
@@ -52,21 +55,12 @@ body {
   clear: both;
 
   ul {
-    list-style-type: none;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
+    @include floating-list();
 
     li {
-      list-style: none;
       border-left: 1px solid #ccc;
-      margin-left: 5px;
-      padding: 0 0 0 5px;
-      float: left;
     }
     li.first {
-      padding-left: 0;
-      margin-left: 0;
       border-left: none;
     }
   }
@@ -123,5 +117,5 @@ body {
 
 
 #number-list {
-
+    @include floating-list();
 }
