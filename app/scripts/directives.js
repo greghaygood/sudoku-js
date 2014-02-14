@@ -28,15 +28,22 @@ module.directive('gameBoard', function() {
 
   console.log("game-board directive ...");
 
-  var drawBoard = function(scope, element, attrs) {
-    console.log('drawing game board', scope, element, attrs);
+  var fillInBoard = function() {
+    console.log("filling in game board ...");
 
+    angular.forEach$('game-board input')
+  };
+
+  var setupGameBoard = function(scope, element, attrs) {
+    console.log('setting up game board', scope, element, attrs);
+
+    fillInBoard();
   };
 
   return {
     restrict: 'E',
     replace: false,
-    link: drawBoard
+    link: setupGameBoard
   };
 
 });

@@ -122,6 +122,15 @@ body {
 
 game-board {
 
+  table.mainbox {
+
+  }
+
+  table.subbox {
+    margin: 2px;
+    border: 2px solid #666;
+  }
+
   td.spacer { width: 50px; }
 
   a.picker { @include pickerFontSize; }
