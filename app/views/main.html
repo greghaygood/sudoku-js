@@ -1,7 +1,20 @@
 
 <div class="jumbotron">
 
-  <game-board></game-board>
+  <game-board>
+  <table>
+    <tr ng-repeat="i in numbers" ng-class="{subbox: $index%3==0}">
+      <td ng-repeat="j in numbers">
+        <input type="number" value="{{i}}/{{j}}/{{$index}}"/>
+      </td>
+      <td class="spacer">&nbsp;</td>
+      <td class="pick-list">
+        <a class="picker" ng-click="pick(i)">{{i}}</a>
+      </td>
+    </tr>
+  </table>
+
+  </game-board>
 
   selected: {{selected}}
   <ul id="number-list" number-list>

@@ -31,7 +31,6 @@ module.directive('gameBoard', function() {
   var drawBoard = function(scope, element, attrs) {
     console.log('drawing game board', scope, element, attrs);
 
-    element.html("<b>hi there</b>");
   };
 
   return {
@@ -52,22 +51,24 @@ module.directive('numberList', function() {
 
   };
 
+  var ctrl = function($scope) {
+    $scope.selected = 0;
+
+    $scope.pick = function(number) {
+      console.log('number selected!', number);
+      angular.forEach($scope.numbers, function(n) {
+        n.selected = false;
+      });
+      number.selected = true;
+      $scope.selected = number;
+    };
+  };
+
   return {
     restrict: 'A',
     replace: false,
     link: renderList,
-    controller: function($scope) {
-      $scope.selected = 0;
-
-      $scope.pick = function(number) {
-        console.log('number selected!', number);
-        angular.forEach($scope.numbers, function(n) {
-          n.selected = false;
-        });
-        number.selected = true;
-        $scope.selected = number;
-      };
-    }
+    controller: ctrl
   };
 
 });

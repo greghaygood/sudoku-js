@@ -115,6 +115,32 @@ body {
 }
 
 
+@mixin pickerFontSize {
+  font-size: 30px;
+  line-height: 30px;
+}
+
+game-board {
+
+  td.spacer { width: 50px; }
+
+  a.picker { @include pickerFontSize; }
+
+  input {
+    width: 50px;
+    height: 50px;
+    @include pickerFontSize;
+    text-align: center;
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+
 #number-list {
   @include floating-list();
 
