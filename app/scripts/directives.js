@@ -28,16 +28,26 @@ module.directive('gameBoard', function() {
 
   console.log("game-board directive ...");
 
-  var fillInBoard = function() {
-    console.log("filling in game board ...");
+  var numbers = [];
 
-    angular.forEach$('game-board input')
+  var fillInBoard = function() {
+    console.log("filling in game board ...", numbers);
+
+    for (var i = 0; i < numbers.length; i++) {
+      for (var j = 0; j < numbers.length; j++) {
+        var m = numbers[i],
+            n = numbers[j];
+
+        $('input#item-'+m+'-'+n).val(2);
+      }
+    }
   };
 
   var setupGameBoard = function(scope, element, attrs) {
     console.log('setting up game board', scope, element, attrs);
 
-    fillInBoard();
+    numbers = scope.numbers;
+    fillInBoard(scope);
   };
 
   return {

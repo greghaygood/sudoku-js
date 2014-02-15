@@ -120,6 +120,14 @@ body {
   line-height: 30px;
 }
 
+p.valid {
+  color: #090;
+}
+
+p.invalid {
+  color: #900;
+}
+
 game-board {
 
   table.mainbox {
