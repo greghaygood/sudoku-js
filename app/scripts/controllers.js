@@ -11,21 +11,6 @@ module.controller('MainCtrl', function ($scope) {
   $scope.boardIsValid = true;
 
   var isValidRowEntry = function(row, current_num) {
-
-  };
-
-  var isValidEntry = function(row, col) {
-
-    var current_num = $scope.board[row][col];
-    if (!current_num) { return true; } // means the user deleted an entry
-    if (isNaN(current_num) || current_num < 1 || current_num > 9) { return false; }
-
-    console.log('checking if ' + current_num + ' is a valid entry ...', row, col);
-
-    // NOTE:  This is a very naive implementation!  I'll figure out how to
-    // incorporate the Dancing Links algorithm later:
-    // http://en.wikipedia.org/wiki/Dancing_Links
-
     // check if row m contains current_num
     var row_count = 0;
     for (var i = 0; i < numbers.length; i++) {
@@ -37,18 +22,25 @@ module.controller('MainCtrl', function ($scope) {
     }
     console.log('processed rows, found ' + row_count + ' matches for ' + current_num);
     if (row_count > 1) { return false; }
+    return true;
+  };
 
-    // check if column n contains current_num
+  var isValidColumnEntry = function(col, current_num) {
+  // check if column n contains current_num
     var col_count = 0;
     for (var j = 0; j < numbers.length; j++) {
       var row_i = numbers[j];
       var entry = $scope.board[row_i][col];
-      console.log('checking col:', i, row_i, entry );
+      console.log('checking col:', j, row_i, entry );
 
       if (current_num == entry) { col_count++; }
     }
     console.log('processed columns, found ' + col_count + ' matches for ' + current_num);
     if (col_count > 1) { return false; }
+    return true;
+  };
+
+  var isValidSubSquareEntry = function(row, col, current_num) {
 
     // check if m-n square contains current_num
     var block_row = Math.ceil(row/3);
@@ -66,9 +58,28 @@ module.controller('MainCtrl', function ($scope) {
     }
     console.log('processed the square, found ' + square_count + ' matches for ' + current_num);
     if (square_count > 1) { return false; }
-
-
     return true;
+  };
+
+  var isValidEntry = function(row, col) {
+
+    var current_num = $scope.board[row][col];
+    if (!current_num) { return true; } // means the user deleted an entry
+    if (isNaN(current_num) || current_num < 1 || current_num > 9) { return false; }
+
+    console.log('checking if ' + current_num + ' is a valid entry ...', row, col);
+
+    // NOTE:  This is a very naive implementation!  I'll figure out how to
+    // incorporate the Dancing Links algorithm later:
+    // http://en.wikipedia.org/wiki/Dancing_Links
+
+    var result = true;
+
+    result = result && isValidRowEntry(row, current_num);
+    result = result && isValidColumnEntry(col, current_num);
+    result = result && isValidSubSquareEntry(row, col, current_num);
+
+    return result;
   };
 
   $scope.updateBoard = function(m, n) {
