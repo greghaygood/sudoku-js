@@ -10,13 +10,17 @@ module.controller('MainCtrl', function ($scope) {
   $scope.message = "Ready ... Set ... Go!";
   $scope.boardIsValid = true;
 
-  var isValidEntry = function(m, n) {
+  var isValidRowEntry = function(row, current_num) {
 
-    var current_num = $scope.board[m][n];
+  };
+
+  var isValidEntry = function(row, col) {
+
+    var current_num = $scope.board[row][col];
     if (!current_num) { return true; } // means the user deleted an entry
     if (isNaN(current_num) || current_num < 1 || current_num > 9) { return false; }
 
-    console.log('checking if ' + current_num + ' is a valid entry ...', m, n);
+    console.log('checking if ' + current_num + ' is a valid entry ...', row, col);
 
     // NOTE:  This is a very naive implementation!  I'll figure out how to
     // incorporate the Dancing Links algorithm later:
@@ -25,40 +29,39 @@ module.controller('MainCtrl', function ($scope) {
     // check if row m contains current_num
     var row_count = 0;
     for (var i = 0; i < numbers.length; i++) {
-      var m_i = numbers[i];
-      var item_m_i = $scope.board[m][m_i];
-      console.log('checking row:', i, m_i, item_m_i );
+      var col_j = numbers[i];
+      var entry = $scope.board[row][col_j];
+      console.log('checking row:', i, col_j, entry );
 
-      if (current_num == item_m_i) { row_count++; }
+      if (current_num == entry) { row_count++; }
     }
     console.log('processed rows, found ' + row_count + ' matches for ' + current_num);
     if (row_count > 1) { return false; }
 
     // check if column n contains current_num
     var col_count = 0;
-    for (var i = 0; i < numbers.length; i++) {
-      var n_i = numbers[i];
-      var item_n_i = $scope.board[n_i][n];
-      console.log('checking col:', i, n_i, item_n_i );
+    for (var j = 0; j < numbers.length; j++) {
+      var row_i = numbers[j];
+      var entry = $scope.board[row_i][col];
+      console.log('checking col:', i, row_i, entry );
 
-      if (current_num == item_n_i) { col_count++; }
+      if (current_num == entry) { col_count++; }
     }
     console.log('processed columns, found ' + col_count + ' matches for ' + current_num);
     if (col_count > 1) { return false; }
 
     // check if m-n square contains current_num
-    var block_row = Math.ceil(m/3);
-    var block_col = Math.ceil(n/3);
+    var block_row = Math.ceil(row/3);
+    var block_col = Math.ceil(col/3);
     console.log('checking square in quadrant: ', block_row, block_col);
     var square_count = 0;
-    // [m+(i-1)*3] x [n+(j-1)*3]
     for (var i=1; i<=3; i++) { // sub-row
       for (var j=1; j<=3; j++) { // sub-col
-        var m_i = 3*(block_row-1) + i;
-        var n_j = 3*(block_col-1) + j;
-        var item_m_n = $scope.board[m_i][n_j];
-        console.log('checking square item: ', m_i, n_j, item_m_n);
-        if (current_num == item_m_n) { square_count++; }
+        var row_i = 3*(block_row-1) + i;
+        var col_j = 3*(block_col-1) + j;
+        var entry = $scope.board[row_i][col_j];
+        console.log('checking square item: ', row_i, col_j, entry);
+        if (current_num == entry) { square_count++; }
       }
     }
     console.log('processed the square, found ' + square_count + ' matches for ' + current_num);
