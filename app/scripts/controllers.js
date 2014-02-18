@@ -69,23 +69,43 @@ module.controller('MainCtrl', function ($scope) {
 
     console.log('checking if ' + current_num + ' is a valid entry ...', row, col);
 
+    if (! isValidRowEntry(row, current_num) ) { return false; }
+    if (! isValidColumnEntry(col, current_num) ) { return false; }
+    if (! isValidSubSquareEntry(row, col, current_num) ) { return false; }
+
+    return true;
+  };
+
+  var isValidBoard = function() {
+
     // NOTE:  This is a very naive implementation!  I'll figure out how to
     // incorporate the Dancing Links algorithm later:
     // http://en.wikipedia.org/wiki/Dancing_Links
 
     var result = true;
 
-    result = result && isValidRowEntry(row, current_num);
-    result = result && isValidColumnEntry(col, current_num);
-    result = result && isValidSubSquareEntry(row, col, current_num);
+    for (var i = 0; i < numbers.length; i++) {
+      var row_i = numbers[i];
+      for (var j = 0; j < numbers.length; j++ ) {
+        var col_j = numbers[j];
 
-    return result;
+        var current_num = $scope.board[row_i][col_j];
+        if (!current_num) { continue; } // empty entry is valid
+
+        if (! isValidRowEntry(row_i, current_num) ) { return false; }
+        if (! isValidColumnEntry(col_j, current_num) ) { return false; }
+        if (! isValidSubSquareEntry(row_i, col_j, current_num) ) { return false; }
+
+        return true;
+      }
+    };
   };
 
   $scope.updateBoard = function(m, n) {
     console.log('updating board ...', $scope.board, m, n);
 
-    if (isValidEntry(m, n)) {
+    // TODO: duplicative check, or is it on-average faster to fail on immediate errors?
+    if (isValidEntry(m, n) && isValidBoard()) {
       $scope.message = "Board is good!";
       $scope.boardIsValid = true;
     } else {
