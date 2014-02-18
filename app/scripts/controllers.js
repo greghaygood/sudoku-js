@@ -10,45 +10,68 @@ module.controller('MainCtrl', function ($scope) {
   $scope.message = "Ready ... Set ... Go!";
   $scope.boardIsValid = true;
 
-  var isValidBoard = function() {
+  var isValidEntry = function(m, n) {
+
+    var current_num = $scope.board[m][n];
+    if (!current_num) { return true; } // means the user deleted an entry
+    if (isNaN(current_num) || current_num < 1 || current_num > 9) { return false; }
+
+    console.log('checking if ' + current_num + ' is a valid entry ...', m, n);
 
     // NOTE:  This is a very naive implementation!  I'll figure out how to
     // incorporate the Dancing Links algorithm later:
     // http://en.wikipedia.org/wiki/Dancing_Links
 
+    // check if row m contains current_num
+    var row_count = 0;
     for (var i = 0; i < numbers.length; i++) {
       var m_i = numbers[i];
-      var row_i = $scope.board[i];
-      console.log('row', i, m_i, row_i);
+      var item_m_i = $scope.board[m][m_i];
+      console.log('checking row:', i, m_i, item_m_i );
 
-        // check if row i contains current_num
-        var row_matches = _.groupBy(row_i, function(num) { return num; });
-        console.log("row_matches", row_i, row_matches);
-        var badRow = _.find(row_matches, function(items, key) { console.log('checking for bad row', key, items); return items[0] != "" && items.length > 1; });
-        console.log('bad row? ', badRow);
-        if (badRow) { return false; }
-
-      for (var j = 0; j < numbers.length; j++) {
-        var n_j = numbers[j];
-
-        var current_num = $scope.board[m_i][n_j];
-
-
-        // check if column j contains current_num
-
-        if ($scope.board[m_i][n_j] == 3) {
-          return false;
-        }
-      };
+      if (current_num == item_m_i) { row_count++; }
     }
+    console.log('processed rows, found ' + row_count + ' matches for ' + current_num);
+    if (row_count > 1) { return false; }
+
+    // check if column n contains current_num
+    var col_count = 0;
+    for (var i = 0; i < numbers.length; i++) {
+      var n_i = numbers[i];
+      var item_n_i = $scope.board[n_i][n];
+      console.log('checking col:', i, n_i, item_n_i );
+
+      if (current_num == item_n_i) { col_count++; }
+    }
+    console.log('processed columns, found ' + col_count + ' matches for ' + current_num);
+    if (col_count > 1) { return false; }
+
+    // check if m-n square contains current_num
+    var block_row = Math.ceil(m/3);
+    var block_col = Math.ceil(n/3);
+    console.log('checking square in quadrant: ', block_row, block_col);
+    var square_count = 0;
+    // [m+(i-1)*3] x [n+(j-1)*3]
+    for (var i=1; i<=3; i++) { // sub-row
+      for (var j=1; j<=3; j++) { // sub-col
+        var m_i = 3*(block_row-1) + i;
+        var n_j = 3*(block_col-1) + j;
+        var item_m_n = $scope.board[m_i][n_j];
+        console.log('checking square item: ', m_i, n_j, item_m_n);
+        if (current_num == item_m_n) { square_count++; }
+      }
+    }
+    console.log('processed the square, found ' + square_count + ' matches for ' + current_num);
+    if (square_count > 1) { return false; }
+
 
     return true;
   };
 
-  $scope.updateBoard = function() {
-    console.log('updating board ...', $scope.board);
+  $scope.updateBoard = function(m, n) {
+    console.log('updating board ...', $scope.board, m, n);
 
-    if (isValidBoard()) {
+    if (isValidEntry(m, n)) {
       $scope.message = "Board is good!";
       $scope.boardIsValid = true;
     } else {

@@ -10,7 +10,7 @@
           <table cellpadding="0" cellspacing="0" border="0" class="subbox">
             <tr ng-repeat="m in shortNumbers">
               <td ng-repeat="n in shortNumbers">
-                <input id="item-{{m+(i-1)*3}}-{{n+(j-1)*3}}" type="number" value="" ng-change="updateBoard()" ng-model="board[m+(i-1)*3][n+(j-1)*3]"/>
+                <input id="item-{{m+(i-1)*3}}-{{n+(j-1)*3}}" data-row="{{m+(i-1)*3}}" data-col="{{n+(j-1)*3}}" type="number" value="" ng-change="updateBoard(m+(i-1)*3, n+(j-1)*3)" ng-model="board[m+(i-1)*3][n+(j-1)*3]"/>
 
               </td>
             </tr>
