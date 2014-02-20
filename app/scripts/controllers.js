@@ -6,12 +6,18 @@ module.controller('MainCtrl', function ($scope) {
 
   var numbers = $scope.numbers = [1,2,3,4,5,6,7,8,9];
 
-  $scope.board = createMultiArray(numbers, numbers);
+  $scope.board = $scope.boardErrors = createMultiArray(numbers, numbers);
   $scope.message = "Ready ... Set ... Go!";
   $scope.boardIsValid = true;
+  $scope.rowErrors = [];
+  $scope.columnErrors = [];
+  $scope.squareErrors = [];
 
   var isValidRowEntry = function(row, current_num) {
     // check if row m contains current_num
+      $scope.rowErrors[row] = false;
+      // $scope.boardErrors[row] = [];
+ //   $scope.boardErrors[row] = [];
     var row_count = 0;
     for (var i = 0; i < numbers.length; i++) {
       var col_j = numbers[i];
@@ -21,12 +27,17 @@ module.controller('MainCtrl', function ($scope) {
       if (current_num == entry) { row_count++; }
     }
     console.log('processed rows, found ' + row_count + ' matches for ' + current_num);
-    if (row_count > 1) { return false; }
+    if (row_count > 1) {
+      $scope.rowErrors[row] = true;
+      // $scope.boardErrors[row] = numbers;
+      return false;
+    }
     return true;
   };
 
   var isValidColumnEntry = function(col, current_num) {
   // check if column n contains current_num
+    $scope.columnErrors[col] = false;
     var col_count = 0;
     for (var j = 0; j < numbers.length; j++) {
       var row_i = numbers[j];
@@ -36,12 +47,19 @@ module.controller('MainCtrl', function ($scope) {
       if (current_num == entry) { col_count++; }
     }
     console.log('processed columns, found ' + col_count + ' matches for ' + current_num);
-    if (col_count > 1) { return false; }
+    if (col_count > 1) {
+      $scope.columnErrors[col] = true;
+      return false;
+    }
     return true;
   };
 
   var isValidSubSquareEntry = function(row, col, current_num) {
 
+    if ( ! $scope.squareErrors[row]) {
+      $scope.squareErrors[row] = [];
+    }
+    $scope.squareErrors[row][col] = false;
     // check if m-n square contains current_num
     var block_row = Math.ceil(row/3);
     var block_col = Math.ceil(col/3);
@@ -57,7 +75,10 @@ module.controller('MainCtrl', function ($scope) {
       }
     }
     console.log('processed the square, found ' + square_count + ' matches for ' + current_num);
-    if (square_count > 1) { return false; }
+    if (square_count > 1) {
+      $scope.squareErrors[row][col] = true;
+      return false;
+    }
     return true;
   };
 
@@ -99,6 +120,13 @@ module.controller('MainCtrl', function ($scope) {
         return true;
       }
     };
+  };
+
+  $scope.isColumnError = function(item) {
+    console.log("COLUMN ERROR!!", item);
+  };
+  $scope.isRowError = function(item) {
+    console.log("ROW ERROR!!", item);
   };
 
   $scope.updateBoard = function(m, n) {

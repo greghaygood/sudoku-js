@@ -134,9 +134,17 @@ game-board {
 
   }
 
+  .error input {
+    background-color: #FDB7BA;
+  }
+
   table.subbox {
     margin: 2px;
     border: 2px solid #666;
+
+    td:hover {
+      background-color: #eee;
+    }
   }
 
   td.spacer { width: 50px; }
@@ -148,6 +156,10 @@ game-board {
     height: 50px;
     @include pickerFontSize;
     text-align: center;
+
+    &:hover {
+      background-color: #eee;
+    }
   }
 
   input[type=number]::-webkit-inner-spin-button,
