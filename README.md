@@ -32,6 +32,13 @@ Typing a number while an empty square is selected places that number in the squa
 
 ### App States
 
-When an invalid number is placed in a square, the number will turn red.
+When an invalid number is placed in a square, the number will turn red, based on whether that number makes its' row, column, and/or subsquare invalid.
 
 When all squares are correctly filled in, the board will turn green.
+
+### TODO
+
+* ~~Layout the game board~~
+* ~~Flag invalid columns and rows~~
+* Flag ALL invalid columns, rows, AND squares :)
+* Create valid boards for solving (possibly using a Dancing Links algo)

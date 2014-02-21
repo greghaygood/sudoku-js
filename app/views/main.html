@@ -4,16 +4,22 @@
   <p ng-model="message" ng-class="{valid: boardIsValid, invalid: !boardIsValid}">{{message}}</p>
 
   <game-board ng-init="shortNumbers=[1,2,3]">
+
+    <div>
+      <p>Rows: {{ rowErrors }}</p>
+      <p>Columns: {{ columnErrors }}</p>
+      <p>Squares: {{ subboxErrors }}</p>
+    </div>
     <table cellpadding="0" cellspacing="0" border="0" class="mainbox">
       <tr ng-repeat="i in shortNumbers">
         <td ng-repeat="j in shortNumbers" >
-          <table cellpadding="0" cellspacing="0" border="0" class="subbox">
+          <table cellpadding="0" cellspacing="0" border="0"
+            class="subbox" ng-class="{error: subboxErrors[{{i}}-{{j}}]}">
             <tr ng-repeat="m in shortNumbers" class="row-{{i}}" ng-class="{error: rowErrors[{{m+(i-1)*3}}]}">
               <td ng-repeat="n in shortNumbers" class="col-{{j}}" ng-class="{error: columnErrors[{{n+(j-1)*3}}]}">
                 <input id="item-{{m+(i-1)*3}}-{{n+(j-1)*3}}" type="number" value=""
                 data-row="{{m+(i-1)*3}}" data-col="{{n+(j-1)*3}}"
                 ng-change="updateBoard(m+(i-1)*3, n+(j-1)*3)"
-                ng-class="{error: squareErrors[{{m+(i-1)*3}}-{{n+(j-1)*3}}]}"
                 ng-model="board[m+(i-1)*3][n+(j-1)*3]"/>
 
               </td>

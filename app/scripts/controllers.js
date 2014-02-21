@@ -11,7 +11,7 @@ module.controller('MainCtrl', function ($scope) {
   $scope.boardIsValid = true;
   $scope.rowErrors = [];
   $scope.columnErrors = [];
-  $scope.squareErrors = [];
+  $scope.subboxErrors = [];
 
   var isValidRowEntry = function(row, current_num) {
     // check if row m contains current_num
@@ -22,7 +22,7 @@ module.controller('MainCtrl', function ($scope) {
     for (var i = 0; i < numbers.length; i++) {
       var col_j = numbers[i];
       var entry = $scope.board[row][col_j];
-      console.log('checking row:', i, col_j, entry );
+      //console.log('checking row:', i, col_j, entry );
 
       if (current_num == entry) { row_count++; }
     }
@@ -42,7 +42,7 @@ module.controller('MainCtrl', function ($scope) {
     for (var j = 0; j < numbers.length; j++) {
       var row_i = numbers[j];
       var entry = $scope.board[row_i][col];
-      console.log('checking col:', j, row_i, entry );
+      //console.log('checking col:', j, row_i, entry );
 
       if (current_num == entry) { col_count++; }
     }
@@ -56,13 +56,13 @@ module.controller('MainCtrl', function ($scope) {
 
   var isValidSubSquareEntry = function(row, col, current_num) {
 
-    if ( ! $scope.squareErrors[row]) {
-      $scope.squareErrors[row] = [];
-    }
-    $scope.squareErrors[row][col] = false;
     // check if m-n square contains current_num
     var block_row = Math.ceil(row/3);
     var block_col = Math.ceil(col/3);
+
+    var key = block_row + "-" + block_col;
+    $scope.subboxErrors[key] = false;
+
     console.log('checking square in quadrant: ', block_row, block_col);
     var square_count = 0;
     for (var i=1; i<=3; i++) { // sub-row
@@ -70,13 +70,13 @@ module.controller('MainCtrl', function ($scope) {
         var row_i = 3*(block_row-1) + i;
         var col_j = 3*(block_col-1) + j;
         var entry = $scope.board[row_i][col_j];
-        console.log('checking square item: ', row_i, col_j, entry);
+        //console.log('checking square item: ', row_i, col_j, entry);
         if (current_num == entry) { square_count++; }
       }
     }
     console.log('processed the square, found ' + square_count + ' matches for ' + current_num);
     if (square_count > 1) {
-      $scope.squareErrors[row][col] = true;
+      $scope.subboxErrors[key] = true;
       return false;
     }
     return true;
@@ -90,36 +90,43 @@ module.controller('MainCtrl', function ($scope) {
 
     console.log('checking if ' + current_num + ' is a valid entry ...', row, col);
 
-    if (! isValidRowEntry(row, current_num) ) { return false; }
-    if (! isValidColumnEntry(col, current_num) ) { return false; }
-    if (! isValidSubSquareEntry(row, col, current_num) ) { return false; }
+    var result = true;
 
-    return true;
+    result = result && isValidRowEntry(row, current_num);
+    result = result && isValidColumnEntry(col, current_num);
+    result = result && isValidSubSquareEntry(row, col, current_num);
+
+    return result;
   };
 
   var isValidBoard = function() {
 
-    // NOTE:  This is a very naive implementation!  I'll figure out how to
-    // incorporate the Dancing Links algorithm later:
+    // NOTE:  This is a very naive implementation!  Maybe I'll
+    // figure out how to incorporate the Dancing Links
+    // algorithm later:
     // http://en.wikipedia.org/wiki/Dancing_Links
 
     var result = true;
 
-    for (var i = 0; i < numbers.length; i++) {
-      var row_i = numbers[i];
-      for (var j = 0; j < numbers.length; j++ ) {
-        var col_j = numbers[j];
+    for (var x = 0; x < numbers.length; x++) {
+        var current_num = numbers[x];
 
-        var current_num = $scope.board[row_i][col_j];
-        if (!current_num) { continue; } // empty entry is valid
+      for (var i = 0; i < numbers.length; i++) {
+        var row_i = numbers[i];
 
-        if (! isValidRowEntry(row_i, current_num) ) { return false; }
-        if (! isValidColumnEntry(col_j, current_num) ) { return false; }
-        if (! isValidSubSquareEntry(row_i, col_j, current_num) ) { return false; }
+        result = result && isValidRowEntry(row_i, current_num);
 
-        return true;
+        for (var j = 0; j < numbers.length; j++ ) {
+          var col_j = numbers[j];
+
+          result = result && isValidColumnEntry(col_j, current_num);
+          result = result && isValidSubSquareEntry(row_i, col_j, current_num);
+
+        }
       }
-    };
+    }
+
+    return result;
   };
 
   $scope.isColumnError = function(item) {
@@ -133,7 +140,7 @@ module.controller('MainCtrl', function ($scope) {
     console.log('updating board ...', $scope.board, m, n);
 
     // TODO: duplicative check, or is it on-average faster to fail on immediate errors?
-    if (isValidEntry(m, n) && isValidBoard()) {
+    if (/*isValidEntry(m, n) &&*/ isValidBoard()) {
       $scope.message = "Board is good!";
       $scope.boardIsValid = true;
     } else {
